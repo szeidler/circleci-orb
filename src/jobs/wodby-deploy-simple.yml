@@ -7,10 +7,10 @@ parameters:
   wodby_instance_uuid:
     description: >
       The UUId of the instance to deployment.
-      
+
       Note: This is the Instance UUID, not the Applicaiton UUID!
       Specifying a wrong UUID will result in deploying the wrong instance!
-  
+
     type: string
   newrelic_app_id:
     description: >
