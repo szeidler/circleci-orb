@@ -1,0 +1,59 @@
+description: >
+  Simple wodby deployment job for composer based Drupal projects
+
+machine: true
+
+parameters:
+  wodby_instance_uuid:
+    description: >
+      The UUId of the instance to deployment.
+
+      Note: This is the Instance UUID, not the Applicaiton UUID!
+      Specifying a wrong UUID will result in deploying the wrong instance!
+
+    type: string
+  newrelic_app_id:
+    description: >
+      (Optional) NewRelic Applicaiton ID to track the deployment.
+
+      If the Instance has NewRelic correctly setup it's possible to track the deployment on the monitoring,
+      this helps correlate deplyments and performance/error changes.
+
+    type: string
+    default: ""
+
+environment:
+  NEW_RELIC_APP_ID: << parameters.newrelic_app_id >>
+
+steps:
+-
+  checkout
+-
+  wodby-cli/setup
+-
+  wodby-cli/ci-init:
+    instance: "<< parameters.wodby_instance_uuid >>"
+-
+  run:
+    name: Create symlink to .env
+    command: ln -sf /mnt/files/keys/drupal_env .env
+-
+  run: wodby ci run -v $HOME/.composer:/home/wodby/.composer --user root -- chown -R 1000:1000 /home/wodby/.composer
+-
+  run:
+    name: composer install
+    command: |
+      # Set 'no-dev' option on composer install when running on master branch.
+      test "${CIRCLE_BRANCH:-}" = 'master' && export NO_DEV="--no-dev"
+      wodby ci run --env COMPOSER_AUTH -v $HOME/.composer:/home/wodby/.composer -s php -- composer install ${NO_DEV:-} --no-progress --no-interaction --prefer-dist --optimize-autoloader
+-
+  wodby-cli/ci-build-release
+-
+  run: wodby ci deploy
+-
+  when:
+    condition: << parameters.newrelic_app_id >>
+    steps:
+    -
+      new-relic/deployment:
+        changelog: "$(git log -n1 --pretty='\"%s\" by <%an> (%h)' $CIRCLE_SHA1) -- CircleCI build: $CIRCLE_BUILD_NUM - URL: $CIRCLE_BUILD_URL"
