@@ -80,6 +80,5 @@ steps:
         echo "Unable to get UUID for instance '$INSTANCE_NAME' for application '<< parameters.wodby_app_uuid >>'" 1>&2
         exit 2
 -
-  wodby-deploy-simple:
+  deploy-drupal-on-wodby:
     wodby_instance_uuid: $WODBY_INSTANCE_UUID
-    newrelic_app_id:  << parameters.newrelic_app_id >>
