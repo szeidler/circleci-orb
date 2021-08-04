@@ -1,0 +1,85 @@
+description: >
+  Wodby deployment job for composer based Drupal projects
+
+machine: true
+
+parameters:
+  wodby_app_uuid:
+    description: >
+      The Wodby _Application_ UUID.
+
+      **IMPORTANT:** Using a wrong UUID will deploy the wrong Application!
+    type: string
+
+  wodby_instance_name:
+    description: >
+      The *machine name* of the Wodby Instance to deploy.
+
+      **Note:**
+      This is _optional_ for 'master' and 'develop' branches provided that the
+      instances follow standard naming (Live & dev).
+    type: string
+    default: ""
+
+  newrelic_app_id:
+    description: >
+      (Optional) NewRelic Applicaiton ID to track the deployment.
+
+      If the Instance has NewRelic correctly setup it's possible to track the
+      deployment on the monitoring,
+    type: string
+    default: ""
+
+environment:
+  NEW_RELIC_APP_ID: << parameters.newrelic_app_id >>
+
+steps:
+-
+  wodby-cli/setup
+-
+  run:
+    name: Get the correct Wodby Instance name
+    command: |
+      if [[ -n "<< parameters.wodby_instance_name >>" ]]; then
+        # Use the provided name if available.
+        inst_name="<< parameters.wodby_instance_name >>"
+      else
+        # Try to detect the instance name from the default branches.
+        case $CIRCLE_BRANCH in
+          master)
+            inst_name=Live
+          ;;
+          main)
+            inst_name=Live
+          ;;
+          develop)
+            inst_name=Dev
+          ;;
+          dev)
+            inst_name=Dev
+          ;;
+          *)
+            echo "Could not detect the a instance name for the current branch ($CIRCLE_BRANCH) and the 'wodby_instance_name' parameter is not defined!" 1>&2
+            exit 1
+          ;;
+        esac;
+      fi;
+
+      # Store the instance name in the env
+      echo "export INSTANCE_NAME=${inst_name}" >> $BASH_ENV
+-
+  wodby-api/select-app-instance-by-name:
+    app_uuid: "<< parameters.wodby_app_uuid >>"
+    instance_name: "$INSTANCE_NAME"
+-
+  when:
+    condition:
+      not: $WODBY_INSTANCE_UUID
+    steps:
+    - run: |
+        echo "Unable to get UUID for instance '$INSTANCE_NAME' for application '<< parameters.wodby_app_uuid >>'" 1>&2
+        exit 2
+-
+  wodby-deploy-simple:
+    wodby_instance_uuid: $WODBY_INSTANCE_UUID
+    newrelic_app_id:  << parameters.newrelic_app_id >>
