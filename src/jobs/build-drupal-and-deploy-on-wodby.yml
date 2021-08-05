@@ -65,7 +65,8 @@ steps:
         esac;
       fi;
 
-      # Store the instance name in the env
+      echo "Instance name defined as: '${inst_name}'"
+      # Store in environment
       echo "export INSTANCE_NAME=${inst_name}" >> $BASH_ENV
 -
   wodby-api/select-app-instance-by-name:
