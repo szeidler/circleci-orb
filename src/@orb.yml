@@ -8,5 +8,5 @@ display:
 
 orbs:
   new-relic: bankrate/new-relic@0.1.2
-  wodby-cli: wodby/cli@volatile
-  wodby-api: wodby/api@volatile
+  wodby-cli: wodby/cli@1.0
+  wodby-api: wodby/api@1.0
