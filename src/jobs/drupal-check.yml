@@ -36,9 +36,14 @@ steps:
     run:
       name: "Check modules: Custom"
       command: |
-        drupal-check << parameters.custom_modules_dir >>
+        mkdir -p tests-results/custom/
+        drupal-check --no-progress --format=junit << parameters.custom_modules_dir >> | tee tests-results/custom/results.xml
   -
     run:
       name: "Check modules: contrib"
       command: |
-        drupal-check web/modules/contrib
+        mkdir -p tests-results/contrib/
+        drupal-check --no-progress --format=junit web/modules/contrib | tee tests-results/contrib/results.xml
+  -
+    store_test_results:
+      path: tests-results/
