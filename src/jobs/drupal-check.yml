@@ -1,45 +1,44 @@
-drupal-check:
-  description: >
-    Verifies the Drupal 9 compatibility
+description: >
+  Verifies the Drupal 9 compatibility
 
-  docker:
-    -
-      image: cimg/php:<< parameters.php_version >>
+docker:
+  -
+    image: cimg/php:<< parameters.php_version >>
 
-  parameters:
-    custom_modules_dir:
-      description: >
-        Path where to find the drupal custom modules.
-        Relative to the repository root.
+parameters:
+  custom_modules_dir:
+    description: >
+      Path where to find the drupal custom modules.
+      Relative to the repository root.
 
-      type: string
-      default: "web/modules/custom"
-    php_version:
-      description: >
-        PHP Version to use when running this job.
-      type: string
-      default: "7.4"
+    type: string
+    default: "web/modules/custom"
+  php_version:
+    description: >
+      PHP Version to use when running this job.
+    type: string
+    default: "7.4"
 
-  steps:
-    -
-      checkout
-    -
-      run:
-        name: Set up drupal-ckeck
-        command: |
-          composer global require mglaman/drupal-check
-    -
-      run:
-        name: composer install
-        command: |
-          composer install --no-progress --no-interaction --prefer-dist
-    -
-      run:
-        name: "Check modules: Custom"
-        command: |
-          drupal-check << parameters.custom_modules_dir >>
-    -
-      run:
-        name: "Check modules: contrib"
-        command: |
-          drupal-check web/modules/contrib
+steps:
+  -
+    checkout
+  -
+    run:
+      name: Set up drupal-ckeck
+      command: |
+        composer global require mglaman/drupal-check
+  -
+    run:
+      name: composer install
+      command: |
+        composer install --no-progress --no-interaction --prefer-dist
+  -
+    run:
+      name: "Check modules: Custom"
+      command: |
+        drupal-check << parameters.custom_modules_dir >>
+  -
+    run:
+      name: "Check modules: contrib"
+      command: |
+        drupal-check web/modules/contrib
