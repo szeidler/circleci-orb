@@ -3,8 +3,6 @@ description: >
 
 docker:
   - image: cimg/node:<< parameters.docker_node_version >>
-orbs:
-  node: circleci/node@4.1.0
 parameters:
   theme:
     description: >-
