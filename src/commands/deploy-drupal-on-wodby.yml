@@ -10,12 +10,11 @@ parameters:
       Specifying a wrong UUID will result in deploying the wrong instance!
 
     type: string
-    
   use_ci_workspace:
-      default: false
-      description: >-
-        Indicates if we should attempt to mount the Workspace from the current workflow.
-      type: boolean
+    default: false
+    description: >-
+      Indicates if we should attempt to mount the Workspace from the current workflow.
+    type: boolean
 
 steps:
 -
