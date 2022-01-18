@@ -13,12 +13,7 @@ usage:
     # if the wodby instances are named 'Dev' and 'Live'
     default-wodby-deployment:
       jobs:
-        - drupal-theme-compile:
-            theme: "innlandet"
         - ramsalt-ci/build-drupal-and-deploy-on-wodby:
             wodby_app_uuid: << pipeline.parameters.wodby-application-uuid >>
-            context: [wodby-api, private-packagist]
-            requires:
-              - drupal-theme-compile
             filters:
               branches: { only: [ master, develop ] }
