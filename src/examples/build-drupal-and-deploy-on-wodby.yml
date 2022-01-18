@@ -1,0 +1,24 @@
+description: >
+  Wodby deployment job for composer based Drupal projects.
+# Provide a use-case based example for using this orb.
+# Everything in the `usage` section will be displayed in the orb registry.
+# Comments are not retained.
+usage:
+  version: 2.1
+  orbs:
+    ramsalt-ci: ramsalt/ci@volatile
+  workflows:
+    version: 2
+    # This workflow takes care of both 'develop' and 'master' branch
+    # if the wodby instances are named 'Dev' and 'Live'
+    default-wodby-deployment:
+      jobs:
+        - drupal-theme-compile:
+            theme: "innlandet"
+        - ramsalt-ci/build-drupal-and-deploy-on-wodby:
+            wodby_app_uuid: << pipeline.parameters.wodby-application-uuid >>
+            context: [wodby-api, private-packagist]
+            requires:
+              - drupal-theme-compile
+            filters:
+              branches: { only: [ master, develop ] }
