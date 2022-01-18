@@ -23,7 +23,7 @@ steps:
 -
   when:
     condition: << parameters.use_ci_workspace >>
-    steps
+    steps:
       -
         attach_workspace:
           at: ~/project
