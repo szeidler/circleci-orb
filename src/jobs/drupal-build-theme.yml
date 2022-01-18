@@ -1,64 +1,59 @@
 description: >
   Build Drupal theme with node
-  
+
 docker:
-    - image: cimg/node:<< parameters.docker_node_version >>
-  parameters:
-    theme:
-      description: >-
-        The drupal theme machine name.
-      type: string
-    theme-root:
-      default: "web/themes/custom"
-      description: >-
-        The drupal theme machine name.
-      type: string
-    destination:
-      default: "dist"
-      description: >-
-        The destination folder to ourput the build.
-      type: string
-    docker_node_version:
-      default: "14.15"
-      description: >
-        Required node version to build the theme.
-        The version must include Major and Minor version (eg. "13.11").
+  - image: cimg/node:<< parameters.docker_node_version >>
+parameters:
+  theme:
+    description: >-
+      The drupal theme machine name.
+    type: string
+  theme-root:
+    default: "web/themes/custom"
+    description: >-
+      The drupal theme machine name.
+    type: string
+  destination:
+    default: "dist"
+    description: >-
+      The destination folder to ourput the build.
+    type: string
+  docker_node_version:
+    default: "14.15"
+    description: >
+      Required node version to build the theme.
+      The version must include Major and Minor version (eg. "13.11").
 
-        Full list of cimg/node versions: https://hub.docker.com/r/cimg/node
-      type: string
-    pre-build-steps:
-      default: []
-      description: >-
-        CI Steps to execute before build.
-      type: steps
-    npm-cache-version:
-      default: v1
-      description: >-
-        Change the default cache version if you need to clear the cache for any
-        reason.
-      type: string
-    npm-with-cache:
-      default: true
-      description: Cache your node packages automatically for faster install times.
-      type: boolean
+      Full list of cimg/node versions: https://hub.docker.com/r/cimg/node
+    type: string
+  pre-build-steps:
+    default: []
+    description: >-
+      CI Steps to execute before build.
+    type: steps
+  npm-cache-version:
+    default: v1
+    description: >-
+      Change the default cache version if you need to clear the cache for any
+      reason.
+    type: string
+  npm-with-cache:
+    default: true
+    description: Cache your node packages automatically for faster install times.
+    type: boolean
 
-  steps:
-    -
-      checkout
-    -
-      node/install-packages:
-        app-dir: << parameters.theme-root >>/<< parameters.theme >>
-        with-cache: << parameters.npm-with-cache >>
-        cache-version: << parameters.npm-cache-version >>
-    -
-      steps: << parameters.pre-build-steps >>
-    -
-      run:
-        name: Build theme
-        command: npm run compile
-        working_directory: << parameters.theme-root >>/<< parameters.theme >>
-    -
-      persist_to_workspace:
-        root: ./
-        paths:
-          - << parameters.theme-root >>/<< parameters.theme >>/<< parameters.destination >>
+steps:
+  - checkout
+  - node/install-packages:
+      app-dir: << parameters.theme-root >>/<< parameters.theme >>
+      with-cache: << parameters.npm-with-cache >>
+      cache-version: << parameters.npm-cache-version >>
+  - steps: << parameters.pre-build-steps >>
+  - run:
+      name: Build theme
+      command: npm run compile
+      working_directory: << parameters.theme-root >>/<< parameters.theme >>
+  - persist_to_workspace:
+      root: ./
+      paths:
+        - << parameters.theme-root >>/<< parameters.theme >>/<< parameters.destination >>
