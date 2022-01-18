@@ -83,3 +83,4 @@ steps:
 -
   deploy-drupal-on-wodby:
     wodby_instance_uuid: $WODBY_INSTANCE_UUID
+    use_ci_workspace: true
