@@ -51,7 +51,7 @@ steps:
   - steps: << parameters.pre-build-steps >>
   - run:
       name: Build theme
-      command: npm run compile
+      command: npm run build
       working_directory: << parameters.theme-root >>/<< parameters.theme >>
   - persist_to_workspace:
       root: ./
