@@ -13,6 +13,11 @@ parameters:
     description: >-
       The drupal theme machine name.
     type: string
+  node-build-method:
+    default: "build"
+    description: >-
+      The build method that npm needs to run.
+    type: string
   destination:
     default: "dist"
     description: >-
@@ -51,7 +56,7 @@ steps:
   - steps: << parameters.pre-build-steps >>
   - run:
       name: Build theme
-      command: npm run build
+      command: npm run << parameters.node-build-method >>
       working_directory: << parameters.theme-root >>/<< parameters.theme >>
   - persist_to_workspace:
       root: ./
