@@ -58,6 +58,9 @@ steps:
           dev)
             inst_name=Dev
           ;;
+          1.x)
+            inst_name=Dev
+          ;;
           staging)
             inst_name=Staging
           ;;
