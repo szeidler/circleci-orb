@@ -58,6 +58,12 @@ steps:
           dev)
             inst_name=Dev
           ;;
+          staging)
+            inst_name=Staging
+          ;;
+          test)
+            inst_name=Staging
+          ;;
           *)
             echo "Could not detect the a instance name for the current branch ($CIRCLE_BRANCH) and the 'wodby_instance_name' parameter is not defined!" 1>&2
             exit 1
