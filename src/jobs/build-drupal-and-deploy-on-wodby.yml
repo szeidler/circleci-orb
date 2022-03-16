@@ -1,7 +1,8 @@
 description: >
   Wodby deployment job for composer based Drupal projects
 
-machine: true
+machine:
+  image: ubuntu-2004:current
 
 parameters:
   wodby_app_uuid:
